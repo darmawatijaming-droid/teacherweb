@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GuruDigital - Platform Pendidikan Digital untuk Guru, Wali, dan Pelajar">
+    <meta name="theme-color" content="#1A365D">
+    <title>GuruDigital</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Google Fonts: Poppins (heading) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Marked.js untuk render Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#1A365D',
+                        'navy-light': '#2A4A7F',
+                        'navy-dark': '#0F2340',
+                        amber: '#D69E2E',
+                        'amber-light': '#ECC94B',
+                        'amber-dark': '#B7791F',
+                        offwhite: '#F7FAFC',
+                        slate: '#2D3748',
+                        muted: '#718096',
+                        'border-c': '#E2E8F0',
+                    },
+                    fontFamily: {
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* === CSS Variables === */
+        :root {
+            --primary: #1A365D;
+            --bg: #F7FAFC;
+            --accent: #D69E2E;
+            --card: #FFFFFF;
+            --text: #2D3748;
+            --muted: #718096;
+            --border: #E2E8F0;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+
+        /* === Scrollbar === */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        /* === Dot Pattern Hero === */
+        .hero-pattern {
+            background-image: radial-gradient(circle, rgba(26,54,93,0.06) 1.2px, transparent 1.2px);
+            background-size: 28px 28px;
+        }
+
+        /* === Accent Line Animation === */
+        .accent-line {
+            width: 72px; height: 4px;
+            background: linear-gradient(90deg, var(--accent), #ECC94B);
+            border-radius: 2px;
+            animation: accentPulse 3s ease-in-out infinite;
+        }
+        @keyframes accentPulse {
+            0%, 100% { width: 72px; opacity: 1; }
+            50% { width: 110px; opacity: 0.85; }
+        }
+
+        /* === Reveal on Scroll === */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* === Nav Active Indicator === */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -4px; left: 50%; width: 0; height: 2px;
+            background: var(--accent); border-radius: 1px;
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+        .nav-link.active::after,
+        .nav-link:hover::after { width: 100%; left: 0; }
+
+        /* === Card Hover === */
+        .card-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(26,54,93,0.12);
+        }
+
+        /* === Post Card Amber Border === */
+        .post-card {
+            border-left: 4px solid transparent;
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .post-card:hover {
+            border-left-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(26,54,93,0.1);
+        }
+
+        /* === Markdown Content Styling === */
+        .md-content h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: var(--primary); }
+        .md-content h2 { font-size: 1.25rem; font-weight: 700; margin: 1rem 0 0.5rem; color: var(--primary); }
+        .md-content h3 { font-size: 1.1rem; font-weight: 600; margin: 0.8rem 0 0.4rem; color: var(--primary); }
+        .md-content p { margin: 0.5rem 0; line-height: 1.7; }
+        .md-content ul, .md-content ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+        .md-content li { margin: 0.25rem 0; }
+        .md-content a { color: var(--accent); text-decoration: underline; }
+        .md-content img { max-width: 100%; border-radius: 8px; margin: 0.75rem 0; }
+        .md-content code { background: #EDF2F7; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+        .md-content blockquote { border-left: 3px solid var(--accent); padding-left: 1rem; margin: 0.75rem 0; color: var(--muted); font-style: italic; }
+
+        /* === Loading Spinner === */
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* === Mobile Menu === */
+        .mobile-overlay {
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .mobile-overlay.open { opacity: 1; pointer-events: all; }
+        .mobile-drawer {
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+        .mobile-overlay.open .mobile-drawer { transform: translateX(0); }
+
+        /* === Toast === */
+        .toast {
+            animation: toastIn 0.4s cubic-bezier(0.16,1,0.3,1), toastOut 0.4s 2.6s ease forwards;
+        }
+        @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-10px); } }
+
+        /* === Guide Table === */
+        .guide-table th { background: var(--primary); color: white; }
+        .guide-table td { border-bottom: 1px solid var(--border); }
+        .guide-table tr:hover td { background: #EDF2F7; }
+        .guide-table code { background: #FEFCBF; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.88em; color: #975A16; }
+
+        /* === Floating Shape === */
+        .float-shape {
+            position: absolute; border-radius: 50%; opacity: 0.07;
+            animation: floatUp 8s ease-in-out infinite;
+        }
+        @keyframes floatUp {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* === Reduced Motion === */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+            .reveal { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- ====== NAVIGATION ====== -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-navy/95 backdrop-blur-md border-b border-white/5 transition-shadow duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+            <!-- Logo -->
+            <a href="#beranda" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 rounded-lg bg-amber flex items-center justify-center text-navy font-heading font-800 text-sm transition-transform group-hover:scale-110">GD</div>
+                <span class="font-heading font-700 text-white text-lg hidden sm:inline">GuruDigital</span>
+            </a>
+
+            <!-- Desktop Links -->
+            <div class="hidden md:flex items-center gap-1">
+                <a href="#beranda" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors active">Beranda</a>
+                <a href="#profil" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors">Profil</a>
+                <a href="#wali-digital" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors">Wali Digital</a>
+                <a href="#english-class" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors">English Class</a>
+                <a href="#artikel" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors">Artikel</a>
+                <a href="#link-eksternal" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors">Link Eksternal</a>
+                <a href="#guide" class="nav-link px-3 py-2 text-sm font-medium text-white/80 hover:text-white transition-colors">Guide</a>
+            </div>
+
+            <!-- Hamburger -->
+            <button id="menuBtn" class="md:hidden w-10 h-10 flex items-center justify-center text-white" aria-label="Buka menu navigasi">
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ====== MOBILE DRAWER ====== -->
+    <div id="mobileOverlay" class="mobile-overlay fixed inset-0 z-[60] bg-black/50">
+        <div class="mobile-drawer fixed top-0 right-0 h-full w-72 bg-navy-dark shadow-2xl p-6">
+            <button id="closeMenuBtn" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white" aria-label="Tutup menu">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <div class="mt-14 flex flex-col gap-1">
+                <a href="#beranda" class="mobile-link block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 font-medium transition-colors">Beranda</a>
+                <a href="#profil" class="mobile-link block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 font-medium transition-colors">Profil</a>
+                <a href="#wali-digital" class="mobile-link block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 font-medium transition-colors">Wali Digital</a>
+                <a href="#english-class" class="mobile-link block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 font-medium transition-colors">English Class</a>
+                <a href="#artikel" class="mobile-link block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 font-medium transition-colors">Artikel</a>
+                <a href="#link-eksternal" class="mobile-link block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 font-medium transition-colors">Link Eksternal</a>
+                <a href="#guide" class="mobile-link block px-4 py-3 rounded-lg text-white/80 hover:text-white hover:bg-white/10 font-medium transition-colors">Guide</a>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <!-- ====== BERANDA / HERO ====== -->
+        <section id="beranda" class="relative min-h-screen flex items-center hero-pattern overflow-hidden">
+            <!-- Floating Shapes -->
+            <div class="float-shape bg-navy w-64 h-64 -top-20 -right-20" style="animation-delay:-1s"></div>
+            <div class="float-shape bg-amber w-40 h-40 bottom-20 -left-10" style="animation-delay:-3s"></div>
+            <div class="float-shape bg-navy w-24 h-24 top-1/3 right-1/4" style="animation-delay:-5s"></div>
+
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-16 relative z-10">
+                <div class="max-w-2xl">
+                    <div class="reveal">
+                        <span class="inline-block px-4 py-1.5 rounded-full bg-amber/10 text-amber font-semibold text-sm mb-6 border border-amber/20">
+                            <i class="fas fa-graduation-cap mr-1.5"></i>Platform Pendidikan Digital
+                        </span>
+                    </div>
+                    <h1 class="reveal reveal-delay-1 font-heading font-900 text-4xl sm:text-5xl lg:text-6xl text-navy leading-tight mb-6">
+                        Belajar Tanpa Batas,<br>
+                        <span class="text-amber">Mengajar Tanpa Hambatan</span>
+                    </h1>
+                    <p class="reveal reveal-delay-2 text-lg text-muted leading-relaxed mb-8 max-w-lg">
+                        GuruDigital menyediakan ruang digital untuk guru, wali murid, dan pelajar. Kelas online, panduan digital parenting, dan ribuan artikel pendidikan dalam satu platform.
+                    </p>
+                    <div class="reveal reveal-delay-3 flex flex-wrap gap-4">
+                        <a href="#artikel" class="inline-flex items-center gap-2 px-6 py-3 bg-navy text-white font-semibold rounded-lg hover:bg-navy-light transition-colors shadow-lg shadow-navy/20">
+                            <i class="fas fa-book-open text-sm"></i>Jelajahi Artikel
+                        </a>
+                        <a href="#profil" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-navy font-semibold rounded-lg hover:bg-gray-50 transition-colors border border-border-c shadow-sm">
+                            <i class="fas fa-user text-sm"></i>Tentang Saya
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll Indicator -->
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted/50">
+                <span class="text-xs font-medium tracking-widest uppercase">Scroll</span>
+                <div class="w-5 h-8 rounded-full border-2 border-muted/30 flex justify-center pt-1.5">
+                    <div class="w-1 h-2 bg-amber rounded-full animate-bounce"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== PROFIL ====== -->
+        <section id="profil" class="py-20 lg:py-28 bg-white">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="grid lg:grid-cols-5 gap-12 lg:gap-16 items-center">
+                    <!-- Foto / Avatar -->
+                    <div class="lg:col-span-2 reveal">
+                        <div class="relative mx-auto w-64 h-64 lg:w-80 lg:h-80">
+                            <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber/20 to-navy/10 rotate-3"></div>
+                            <div class="relative w-full h-full rounded-2xl bg-navy flex items-center justify-center overflow-hidden shadow-xl">
+                                <div class="text-center">
+                                    <div class="w-28 h-28 mx-auto rounded-full bg-amber/20 flex items-center justify-center mb-4">
+                                        <i class="fas fa-chalkboard-teacher text-5xl text-amber"></i>
+                                    </div>
+                                    <span class="text-white/60 text-sm font-medium">Guru Digital</span>
+                                </div>
+                            </div>
+                            <!-- Decorative badge -->
+                            <div class="absolute -bottom-3 -right-3 bg-amber text-navy text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                                <i class="fas fa-check-circle mr-1"></i>Terverifikasi
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="lg:col-span-3">
+                        <div class="reveal">
+                            <div class="accent-line mb-4"></div>
+                            <h2 class="font-heading font-800 text-3xl sm:text-4xl text-navy mb-4">Profil Pengajar</h2>
+                        </div>
+                        <p class="reveal reveal-delay-1 text-muted leading-relaxed mb-6">
+                            Saya adalah seorang pendidik digital yang berkomitmen menghadirkan pengalaman belajar modern dan berkualitas. Dengan pengalaman lebih dari 10 tahun di dunia pendidikan dan teknologi, saya percaya bahwa transformasi digital di dunia guru bukan sekadar tren — melainkan kebutuhan.
+                        </p>
+                        <p class="reveal reveal-delay-2 text-muted leading-relaxed mb-8">
+                            Melalui GuruDigital, saya menggabungkan metode pedagogi terbaik dengan teknologi terkini untuk menciptakan ekosistem belajar yang inklusif, interaktif, dan bermakna bagi seluruh pemangku kepentingan pendidikan.
+                        </p>
+
+                        <!-- Keahlian -->
+                        <div class="reveal reveal-delay-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="text-center p-4 rounded-xl bg-offwhite border border-border-c">
+                                <i class="fas fa-laptop-code text-2xl text-amber mb-2"></i>
+                                <span class="text-sm font-semibold text-navy block">Digital Literacy</span>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-offwhite border border-border-c">
+                                <i class="fas fa-language text-2xl text-amber mb-2"></i>
+                                <span class="text-sm font-semibold text-navy block">English</span>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-offwhite border border-border-c">
+                                <i class="fas fa-shield-alt text-2xl text-amber mb-2"></i>
+                                <span class="text-sm font-semibold text-navy block">Cyber Safety</span>
+                            </div>
+                            <div class="text-center p-4 rounded-xl bg-offwhite border border-border-c">
+                                <i class="fas fa-pen-fancy text-2xl text-amber mb-2"></i>
+                                <span class="text-sm font-semibold text-navy block">Content</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== WALI DIGITAL ====== -->
+        <section id="wali-digital" class="py-20 lg:py-28 bg-offwhite">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="text-center mb-14 reveal">
+                    <div class="accent-line mx-auto mb-4"></div>
+                    <h2 class="font-heading font-800 text-3xl sm:text-4xl text-navy mb-4">Wali Digital</h2>
+                    <p class="text-muted max-w-xl mx-auto">Panduan lengkap bagi orang tua dan wali murid dalam mendampingi anak di era digital. Program ini dirancang agar Anda siap menjadi pelindung digital keluarga.</p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Kartu 1 -->
+                    <article class="reveal card-lift bg-white rounded-2xl p-6 border border-border-c shadow-sm">
+                        <div class="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center mb-5">
+                            <i class="fas fa-eye text-xl text-amber"></i>
+                        </div>
+                        <h3 class="font-heading font-700 text-lg text-navy mb-2">Monitoring Cerdas</h3>
+                        <p class="text-muted text-sm leading-relaxed">Teknik memantau aktivitas online anak tanpa menghilangkan privasi mereka. Pelajari batasan yang sehat antara pengawasan dan kepercayaan.</p>
+                    </article>
+
+                    <!-- Kartu 2 -->
+                    <article class="reveal reveal-delay-1 card-lift bg-white rounded-2xl p-6 border border-border-c shadow-sm">
+                        <div class="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center mb-5">
+                            <i class="fas fa-shield-virus text-xl text-amber"></i>
+                        </div>
+                        <h3 class="font-heading font-700 text-lg text-navy mb-2">Keamanan Siber</h3>
+                        <p class="text-muted text-sm leading-relaxed">Kenali ancaman dunia digital: cyberbullying, phishing, konten tidak pantas, dan cara melindungi anak dari bahaya online.</p>
+                    </article>
+
+                    <!-- Kartu 3 -->
+                    <article class="reveal reveal-delay-2 card-lift bg-white rounded-2xl p-6 border border-border-c shadow-sm">
+                        <div class="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center mb-5">
+                            <i class="fas fa-clock text-xl text-amber"></i>
+                        </div>
+                        <h3 class="font-heading font-700 text-lg text-navy mb-2">Manajemen Screen Time</h3>
+                        <p class="text-muted text-sm leading-relaxed">Strategi mengatur waktu layar yang efektif dan adaptif sesuai usia anak. Bukan larangan, tapi edukasi penggunaan bertanggung jawab.</p>
+                    </article>
+
+                    <!-- Kartu 4 -->
+                    <article class="reveal card-lift bg-white rounded-2xl p-6 border border-border-c shadow-sm">
+                        <div class="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center mb-5">
+                            <i class="fas fa-comments text-xl text-amber"></i>
+                        </div>
+                        <h3 class="font-heading font-700 text-lg text-navy mb-2">Komunikasi Terbuka</h3>
+                        <p class="text-muted text-sm leading-relaxed">Membangun dialog sehat antara orang tua dan anak tentang pengalaman digital mereka. Jembatan pemahaman, bukan tembok larangan.</p>
+                    </article>
+
+                    <!-- Kartu 5 -->
+                    <article class="reveal reveal-delay-1 card-lift bg-white rounded-2xl p-6 border border-border-c shadow-sm">
+                        <div class="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center mb-5">
+                            <i class="fas fa-gamepad text-xl text-amber"></i>
+                        </div>
+                        <h3 class="font-heading font-700 text-lg text-navy mb-2">Literasi Gaming</h3>
+                        <p class="text-muted text-sm leading-relaxed">Memahami dunia game yang dimainkan anak: mana yang edukatif, mana yang berisiko, dan bagaimana menetapkan aturan bermain yang adil.</p>
+                    </article>
+
+                    <!-- Kartu 6 -->
+                    <article class="reveal reveal-delay-2 card-lift bg-white rounded-2xl p-6 border border-border-c shadow-sm">
+                        <div class="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center mb-5">
+                            <i class="fas fa-file-contract text-xl text-amber"></i>
+                        </div>
+                        <h3 class="font-heading font-700 text-lg text-navy mb-2">Kontrak Digital Keluarga</h3>
+                        <p class="text-muted text-sm leading-relaxed">Template dan panduan membuat kesepakatan bersama antara orang tua dan anak tentang penggunaan perangkat digital di rumah.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== ENGLISH CLASS ====== -->
+        <section id="english-class" class="py-20 lg:py-28 bg-white">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="reveal">
+                            <div class="accent-line mb-4"></div>
+                            <h2 class="font-heading font-800 text-3xl sm:text-4xl text-navy mb-4">English Class</h2>
+                        </div>
+                        <p class="reveal reveal-delay-1 text-muted leading-relaxed mb-8">
+                            Kelas Bahasa Inggris interaktif yang dirancang khusus untuk pelajar dan guru Indonesia. Metode pembelajaran berbasis konteks dengan fokus pada komunikasi nyata, bukan sekadar teori tata bahasa.
+                        </p>
+
+                        <div class="space-y-5">
+                            <div class="reveal reveal-delay-1 flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center font-heading font-700 text-sm">1</div>
+                                <div>
+                                    <h4 class="font-semibold text-navy mb-1">Conversation Practice</h4>
+                                    <p class="text-muted text-sm">Latihan percakapan real-time dengan skenario kehidupan sehari-hari dan konteks akademik.</p>
+                                </div>
+                            </div>
+                            <div class="reveal reveal-delay-2 flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center font-heading font-700 text-sm">2</div>
+                                <div>
+                                    <h4 class="font-semibold text-navy mb-1">Grammar in Context</h4>
+                                    <p class="text-muted text-sm">Tata bahasa diajarkan melalui contoh nyata, bukan drill membosankan. Pahami pola, bukan hafalan.</p>
+                                </div>
+                            </div>
+                            <div class="reveal reveal-delay-3 flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center font-heading font-700 text-sm">3</div>
+                                <div>
+                                    <h4 class="font-semibold text-navy mb-1">Academic Writing</h4>
+                                    <p class="text-muted text-sm">Keterampilan menulis esai, laporan, dan paper akademik sesuai standar internasional.</p>
+                                </div>
+                            </div>
+                            <div class="reveal reveal-delay-4 flex items-start gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber text-navy font-heading font-700 text-sm"><i class="fas fa-star text-xs"></i></div>
+                                <div>
+                                    <h4 class="font-semibold text-navy mb-1">TOEFL / IELTS Prep</h4>
+                                    <p class="text-muted text-sm">Persiapan ujian sertifikasi internasional dengan latihan soal dan strategi menjawab terbukti.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual / Stats -->
+                    <div class="reveal">
+                        <div class="bg-offwhite rounded-2xl p-8 border border-border-c">
+                            <div class="grid grid-cols-2 gap-6 mb-8">
+                                <div class="text-center p-5 bg-white rounded-xl shadow-sm border border-border-c">
+                                    <div class="font-heading font-800 text-3xl text-amber mb-1" data-count="500">0</div>
+                                    <span class="text-muted text-sm">Murid Aktif</span>
+                                </div>
+                                <div class="text-center p-5 bg-white rounded-xl shadow-sm border border-border-c">
+                                    <div class="font-heading font-800 text-3xl text-navy mb-1" data-count="1200">0</div>
+                                    <span class="text-muted text-sm">Jam Mengajar</span>
+                                </div>
+                                <div class="text-center p-5 bg-white rounded-xl shadow-sm border border-border-c">
+                                    <div class="font-heading font-800 text-3xl text-amber mb-1" data-count="98">0</div>
+                                    <span class="text-muted text-sm">% Kepuasan</span>
+                                </div>
+                                <div class="text-center p-5 bg-white rounded-xl shadow-sm border border-border-c">
+                                    <div class="font-heading font-800 text-3xl text-navy mb-1" data-count="45">0</div>
+                                    <span class="text-muted text-sm">Modul Materi</span>
+                                </div>
+                            </div>
+                            <div class="bg-navy rounded-xl p-6 text-center">
+                                <i class="fas fa-headset text-3xl text-amber mb-3"></i>
+                                <p class="text-white font-semibold mb-1">Konsultasi Gratis</p>
+                                <p class="text-white/60 text-sm">Diskusi level dan kebutuhan Anda sebelum bergabung kelas.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== ARTIKEL (JAMstack via Google Sheet) ====== -->
+        <section id="artikel" class="py-20 lg:py-28 bg-offwhite">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="text-center mb-14 reveal">
+                    <div class="accent-line mx-auto mb-4"></div>
+                    <h2 class="font-heading font-800 text-3xl sm:text-4xl text-navy mb-4">Artikel</h2>
+                    <p class="text-muted max-w-xl mx-auto">Konten ditarik langsung dari Google Spreadsheet. Tulis di Sheet, tampil di web — tanpa CMS, tanpa deployment ulang.</p>
+                </div>
+
+                <div id="posts-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Artikel cards akan di-render di sini oleh JavaScript -->
+                </div>
+
+                <div id="posts-error" class="hidden text-center py-12">
+                    <i class="fas fa-exclamation-triangle text-4xl text-amber mb-4"></i>
+                    <p class="text-muted mb-4">Gagal memuat artikel dari Google Sheet.</p>
+                    <button onclick="loadPosts()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-navy text-white font-semibold rounded-lg hover:bg-navy-light transition-colors text-sm">
+                        <i class="fas fa-redo"></i>Coba Lagi
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== LINK EKSTERNAL ====== -->
+        <section id="link-eksternal" class="py-20 lg:py-28 bg-white">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+                <div class="text-center mb-14 reveal">
+                    <div class="accent-line mx-auto mb-4"></div>
+                    <h2 class="font-heading font-800 text-3xl sm:text-4xl text-navy mb-4">Link Eksternal</h2>
+                    <p class="text-muted max-w-xl mx-auto">Akses langsung ke platform dan sumber belajar yang saya rekomendasikan.</p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <a href="https://classroom.google.com" target="_blank" rel="noopener noreferrer"
+                       class="reveal card-lift group bg-offwhite rounded-xl p-5 border border-border-c text-center">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-green-600/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fab fa-google text-2xl text-green-600"></i>
+                        </div>
+                        <h3 class="font-semibold text-navy mb-1 text-sm">Google Classroom</h3>
+                        <p class="text-muted text-xs">Platform kelas virtual</p>
+                    </a>
+
+                    <a href="https://www.canva.com" target="_blank" rel="noopener noreferrer"
+                       class="reveal reveal-delay-1 card-lift group bg-offwhite rounded-xl p-5 border border-border-c text-center">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fab fa-canva text-2xl text-blue-500"></i>
+                        </div>
+                        <h3 class="font-semibold text-navy mb-1 text-sm">Canva for Education</h3>
+                        <p class="text-muted text-xs">Desain presentasi & materi</p>
+                    </a>
+
+                    <a href="https://quizizz.com" target="_blank" rel="noopener noreferrer"
+                       class="reveal reveal-delay-2 card-lift group bg-offwhite rounded-xl p-5 border border-border-c text-center">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-question-circle text-2xl text-purple-500"></i>
+                        </div>
+                        <h3 class="font-semibold text-navy mb-1 text-sm">Quizizz</h3>
+                        <p class="text-muted text-xs">Kuis & asesmen interaktif</p>
+                    </a>
+
+                    <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer"
+                       class="reveal reveal-delay-3 card-lift group bg-offwhite rounded-xl p-5 border border-border-c text-center">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-red-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fab fa-youtube text-2xl text-red-500"></i>
+                        </div>
+                        <h3 class="font-semibold text-navy mb-1 text-sm">YouTube Edukasi</h3>
+                        <p class="text-muted text-xs">Video pembelajaran</p>
+                    </a>
+
+                    <a href="https://www.duolingo.com" target="_blank" rel="noopener noreferrer"
+                       class="reveal card-lift group bg-offwhite rounded-xl p-5 border border-border-c text-center">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-feather-alt text-2xl text-emerald-500"></i>
+                        </div>
+                        <h3 class="font-semibold text-navy mb-1 text-sm">Duolingo</h3>
+                        <p class="text-muted text-xs">Belajar bahasa asing</p>
+                    </a>
+
+                    <a href="https://kahoot.com" target="_blank" rel="noopener noreferrer"
+                       class="reveal reveal-delay-1 card-lift group bg-offwhite rounded-xl p-5 border border-border-c text-center">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-pink-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-bolt text-2xl text-pink-500"></i>
+                        </div>
+                        <h3 class="font-semibold text-navy mb-1 text-sm">Kahoot!</h3>
+                        <p class="text-muted text-xs">Game-based learning</p>
+                    </a>
+
+                    <a href="https://www.padlet.com" target="_blank" rel="noopener noreferrer"
+                       class="reveal reveal-delay-2 card-lift group bg-offwhite rounded-xl p-5 border border-border-c text-center">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-orange-400/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-sticky-note text-2xl text-orange-400"></i>
+                        </div>
+                        <h3 class="font-semibold text-navy mb-1 text-sm">Padlet</h3>
+                        <p class="text-muted text-xs">Papan kolaborasi digital</p>
+                    </a>
+
+                    <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer"
+                       class="reveal reveal-delay-3 card-lift group bg-offwhite rounded-xl p-5 border border-border-c text-center">
+                        <div class="w-12 h-12 mx-auto rounded-xl bg-yellow-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fab fa-google-drive text-2xl text-yellow-500"></i>
+                        </div>
+                        <h3 class="font-semibold text-navy mb-1 text-sm">Google Drive</h3>
+                        <p class="text-muted text-xs">Penyimpanan & berbagi file</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== GUIDE ====== -->
+        <section id="guide" class="py-20 lg:py-28 bg-offwhite">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6">
+                <div class="text-center mb-14 reveal">
+                    <div class="accent-line mx-auto mb-4"></div>
+                    <h2 class="font-heading font-800 text-3xl sm:text-4xl text-navy mb-4">Guide: Menulis Markdown</h2>
+                    <p class="text-muted max-w-xl mx-auto">Kolom <strong>KontenMarkdown</strong> di Google Spreadsheet mendukung format Markdown. Gunakan referensi berikut untuk menulis konten Anda.</p>
+                </div>
+
+                <div class="reveal overflow-x-auto">
+                    <table class="guide-table w-full text-sm rounded-xl overflow-hidden shadow-sm border border-border-c">
+                        <thead>
+                            <tr>
+                                <th class="text-left px-5 py-3.5 font-semibold text-sm" style="background:#1A365D;color:white;">Elemen</th>
+                                <th class="text-left px-5 py-3.5 font-semibold text-sm" style="background:#1A365D;color:white;">Sintaks Markdown</th>
+                                <th class="text-left px-5 py-3.5 font-semibold text-sm" style="background:#1A365D;color:white;">Hasil / Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            <tr>
+                                <td class="px-5 py-3.5 font-semibold text-navy">Heading</td>
+                                <td class="px-5 py-3.5"><code># Judul Utama</code><br><code>## Sub Judul</code><br><code>### Sub Sub</code></td>
+                                <td class="px-5 py-3.5 text-muted">Hingga level 6 dengan jumlah <code>#</code></td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-3.5 font-semibold text-navy">Bold</td>
+                                <td class="px-5 py-3.5"><code>**teks tebal**</code></td>
+                                <td class="px-5 py-3.5 text-muted">Teks muncul <strong>tebal</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-3.5 font-semibold text-navy">Italic</td>
+                                <td class="px-5 py-3.5"><code>*teks miring*</code></td>
+                                <td class="px-5 py-3.5 text-muted">Teks muncul <em>miring</em></td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-3.5 font-semibold text-navy">Link</td>
+                                <td class="px-5 py-3.5"><code>[teks tautan](https://url.com)</code></td>
+                                <td class="px-5 py-3.5 text-muted">Teks yang bisa diklik menuju URL</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-3.5 font-semibold text-navy">Image</td>
+                                <td class="px-5 py-3.5"><code>![alt teks](https://url-gambar.com/img.jpg)</code></td>
+                                <td class="px-5 py-3.5 text-muted">Menampilkan gambar dari URL</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-3.5 font-semibold text-navy">List</td>
+                                <td class="px-5 py-3.5"><code>- Item satu</code><br><code>- Item dua</code></td>
+                                <td class="px-5 py-3.5 text-muted">Daftar bullet points</td>
+                            </tr>
+                            <tr>
+                                <td class="px-5 py-3.5 font-semibold text-navy">Blockquote</td>
+                                <td class="px-5 py-3.5"><code>> Kutipan penting</code></td>
+                                <td class="px-5 py-3.5 text-muted">Blok kutipan dengan garis samping</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="reveal mt-8 bg-white rounded-xl p-6 border border-border-c">
+                    <h4 class="font-heading font-700 text-navy mb-3"><i class="fas fa-lightbulb text-amber mr-2"></i>Tips Menulis di Spreadsheet</h4>
+                    <ul class="space-y-2 text-muted text-sm">
+                        <li class="flex items-start gap-2"><span class="text-amber mt-0.5"><i class="fas fa-check-circle"></i></span> Pastikan header kolom pertama bernama <strong class="text-navy">Judul</strong>, <strong class="text-navy">Tanggal</strong>, <strong class="text-navy">Kategori</strong>, dan <strong class="text-navy">KontenMarkdown</strong>.</li>
+                        <li class="flex items-start gap-2"><span class="text-amber mt-0.5"><i class="fas fa-check-circle"></i></span> Sel yang berisi Markdown panjang sebaiknya di-wrap dengan tanda kutip ganda (<code>"</code>) agar baris baru tidak membuat baris CSV baru.</li>
+                        <li class="flex items-start gap-2"><span class="text-amber mt-0.5"><i class="fas fa-check-circle"></i></span> Publikasikan Sheet via <strong class="text-navy">File &rarr; Share &rarr; Publish to web &rarr; CSV</strong>.</li>
+                        <li class="flex items-start gap-2"><span class="text-amber mt-0.5"><i class="fas fa-check-circle"></i></span> Setelah mengedit Sheet, tunggu beberapa menit agar cache Google ter-refresh.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="bg-navy text-white/60 py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-amber flex items-center justify-center text-navy font-heading font-800 text-sm">GD</div>
+                    <span class="font-heading font-700 text-white text-lg">GuruDigital</span>
+                </div>
+                <p class="text-sm text-center md:text-right">
+                    &copy; 2025 GuruDigital. Dibangun dengan JAMstack &mdash; Konten dari Google Sheet.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ====== SCROLL TO TOP ====== -->
+    <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+            class="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-navy text-white shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-40 hover:bg-navy-light focus:outline-none focus:ring-2 focus:ring-amber"
+            aria-label="Kembali ke atas">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- ====== TOAST CONTAINER ====== -->
+    <div id="toast-container" class="fixed top-20 right-4 z-[70] flex flex-col gap-2"></div>
+
+    <!-- ====== JAVASCRIPT ====== -->
+    <script>
+        // ============================================================
+        // KONFIGURASI: Ganti dengan URL CSV Google Sheet kamu
+        // Cara: Buka Google Sheet → File → Share → Publish to web
+        //       Pilih sheet → Format CSV → Publish
+        //       Salin URL yang muncul dan paste di bawah ini.
+        // ============================================================
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-YOUR_SHEET_ID_HERE/pub?output=csv';
+
+        // ============================================================
+        // NAVIGASI
+        // ============================================================
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        // Buka/tutup mobile menu
+        menuBtn.addEventListener('click', () => mobileOverlay.classList.add('open'));
+        closeMenuBtn.addEventListener('click', () => mobileOverlay.classList.remove('open'));
+        mobileOverlay.addEventListener('click', (e) => {
+            if (e.target === mobileOverlay) mobileOverlay.classList.remove('open');
+        });
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => mobileOverlay.classList.remove('open'));
+        });
+
+        // Scroll Spy — highlight nav link sesuai section yang terlihat
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section[id]');
+
+        function updateActiveNav() {
+            const scrollPos = window.scrollY + 120;
+            sections.forEach(section => {
+                const top = section.offsetTop;
+                const height = section.offsetHeight;
+                const id = section.getAttribute('id');
+                if (scrollPos >= top && scrollPos < top + height) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
+        window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+        // Navbar shadow saat scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        }, { passive: true });
+
+        // Scroll to top button
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 600) {
+                scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+                scrollTopBtn.classList.add('opacity-100');
+            } else {
+                scrollTopBtn.classList.add('opacity-0', 'pointer-events-none');
+                scrollTopBtn.classList.remove('opacity-100');
+            }
+        }, { passive: true });
+
+        // ============================================================
+        // SCROLL REVEAL (IntersectionObserver)
+        // ============================================================
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // ============================================================
+        // COUNTER ANIMATION (English Class stats)
+        // ============================================================
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.getAttribute('data-count'));
+                    if (isNaN(target)) return;
+                    let current = 0;
+                    const step = Math.max(1, Math.floor(target / 60));
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        el.textContent = current.toLocaleString('id-ID');
+                    }, 25);
+                    counterObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+
+        // ============================================================
+        // TOAST NOTIFICATION
+        // ============================================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-green-600',
+                error: 'bg-red-600',
+                info: 'bg-navy',
+            };
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle',
+            };
+            toast.className = `toast ${colors[type] || colors.info} text-white px-5 py-3 rounded-lg shadow-xl flex items-center gap-3 text-sm font-medium max-w-xs`;
+            toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 3200);
+        }
+
+        // ============================================================
+        // CSV PARSER — menangani quoted fields, newlines dalam sel
+        // ============================================================
+        function parseCSV(text) {
+            const rows = [];
+            let currentRow = [];
+            let currentField = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+
+                if (inQuotes) {
+                    if (char === '"' && nextChar === '"') {
+                        // Escaped quote ""
+                        currentField += '"';
+                        i++;
+                    } else if (char === '"') {
+                        // End of quoted field
+                        inQuotes = false;
+                    } else {
+                        currentField += char;
+                    }
+                } else {
+                    if (char === '"') {
+                        inQuotes = true;
+                    } else if (char === ',') {
+                        currentRow.push(currentField.trim());
+                        currentField = '';
+                    } else if (char === '\r' && nextChar === '\n') {
+                        currentRow.push(currentField.trim());
+                        if (currentRow.length > 0 && currentRow.some(c => c !== '')) {
+                            rows.push(currentRow);
+                        }
+                        currentRow = [];
+                        currentField = '';
+                        i++; // skip \n
+                    } else if (char === '\n') {
+                        currentRow.push(currentField.trim());
+                        if (currentRow.length > 0 && currentRow.some(c => c !== '')) {
+                            rows.push(currentRow);
+                        }
+                        currentRow = [];
+                        currentField = '';
+                    } else {
+                        currentField += char;
+                    }
+                }
+            }
+
+            // Baris terakhir
+            if (currentField || currentRow.length > 0) {
+                currentRow.push(currentField.trim());
+                if (currentRow.some(c => c !== '')) {
+                    rows.push(currentRow);
+                }
+            }
+
+            return rows;
+        }
+
+        // ============================================================
+        // AMBIL & RENDER ARTIKEL DARI GOOGLE SHEET
+        // ============================================================
+        // Konfigurasi marked.js
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true,       // Single newline → <br>
+                gfm: true,          // GitHub Flavored Markdown
+            });
+        }
+
+        async function loadPosts() {
+            const container = document.getElementById('posts-container');
+            const errorEl = document.getElementById('posts-error');
+
+            // Tampilkan loading spinner
+            container.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-16 gap-4">
+                    <div class="spinner"></div>
+                    <p class="text-muted text-sm">Memuat artikel dari Google Sheet...</p>
+                </div>
+            `;
+            errorEl.classList.add('hidden');
+
+            try {
+                const response = await fetch(SHEET_CSV_URL);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const csvText = await response.text();
+                const rows = parseCSV(csvText);
+
+                if (rows.length < 2) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-16">
+                            <i class="fas fa-inbox text-4xl text-border-c mb-4"></i>
+                            <p class="text-muted">Belum ada artikel. Tulis sesuatu di Google Sheet!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Baris pertama = header
+                const headers = rows[0].map(h => h.replace(/^["']|["']$/g, '').trim());
+                const titleIdx = headers.indexOf('Judul');
+                const dateIdx = headers.indexOf('Tanggal');
+                const catIdx = headers.indexOf('Kategori');
+                const mdIdx = headers.indexOf('KontenMarkdown');
+
+                let html = '';
+                let postCount = 0;
+
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    // Skip baris kosong
+                    if (!row || row.every(c => !c || c.trim() === '')) continue;
+
+                    const title = (titleIdx >= 0 && row[titleIdx]) ? row[titleIdx] : 'Tanpa Judul';
+                    const date = (dateIdx >= 0 && row[dateIdx]) ? row[dateIdx] : '';
+                    const category = (catIdx >= 0 && row[catIdx]) ? row[catIdx] : '';
+                    const markdown = (mdIdx >= 0 && row[mdIdx]) ? row[mdIdx] : '';
+
+                    // Render Markdown ke HTML
+                    let rendered = '';
+                    if (markdown && typeof marked !== 'undefined') {
+                        rendered = marked.parse(markdown);
+                    } else if (markdown) {
+                        rendered = `<p>${markdown.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
+                    }
+
+                    html += `
+                    <article class="post-card bg-white rounded-2xl p-6 border border-border-c shadow-sm reveal${postCount > 0 ? ' reveal-delay-' + Math.min(postCount, 4) : ''}">
+                        <div class="flex items-center gap-2 mb-3 flex-wrap">
+                            ${category ? `<span class="inline-block px-2.5 py-0.5 rounded-full bg-amber/10 text-amber text-xs font-semibold">${category}</span>` : ''}
+                            ${date ? `<span class="text-muted text-xs"><i class="far fa-calendar-alt mr-1"></i>${date}</span>` : ''}
+                        </div>
+                        <h3 class="font-heading font-700 text-navy text-lg mb-3 leading-snug">${title}</h3>
+                        <div class="md-content text-muted text-sm leading-relaxed line-clamp-4">${rendered}</div>
+                    </article>
+                    `;
+                    postCount++;
+                }
+
+                if (postCount === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-16">
+                            <i class="fas fa-inbox text-4xl text-border-c mb-4"></i>
+                            <p class="text-muted">Belum ada artikel yang ditampilkan.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = html;
+                    // Observe newly added .reveal elements
+                    container.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+                    showToast(`${postCount} artikel berhasil dimuat`, 'success');
+                }
+
+            } catch (error) {
+                console.error('Gagal memuat artikel:', error);
+                container.innerHTML = '';
+                errorEl.classList.remove('hidden');
+                showToast('Gagal memuat artikel', 'error');
+            }
+        }
+
+        // Muat artikel saat halaman siap
+        loadPosts();
+
+        // ============================================================
+        // PWA: Register Service Worker
+        // ============================================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => {
+                        console.log('Service Worker terdaftar, scope:', reg.scope);
+                    })
+                    .catch(err => {
+                        console.warn('Gagal mendaftarkan Service Worker:', err);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
